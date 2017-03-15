@@ -1,4 +1,6 @@
 {
-  "name": "WaterApp",
-  "app_id": "23f692c4"
+  "name": "WaterApp2",
+  "app_id": "31dc9239",
+  "v2": true,
+  "typescript": true
 }

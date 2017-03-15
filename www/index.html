@@ -1,109 +1,44 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ionic App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
 
-    
-    
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
+  <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4e8ef7">
+  
+  <!-- Google maps plugin -->
+  <script src="http://maps.google.com/maps/api/js?key=AIzaSyCntFomre5RqTTFDcw0ZVS1xxr8tYmuolg"></script>
+  <!-- cordova.js required for cordova apps -->
+  <script src="cordova.js"></script>
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
+  <!-- un-comment this code to enable service worker
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('service worker installed'))
+        .catch(err => console.log('Error', err));
+    }
+  </script>-->
 
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
+  <link href="build/main.css" rel="stylesheet">
 
-    
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    
+</head>
+<body>
 
-    <style type="text/css">
-      .platform-ios .manual-ios-statusbar-padding{
-        padding-top:20px;
-      }
-      .manual-remove-top-padding{
-        padding-top:0px; 
-      }
-      .manual-remove-top-padding .scroll{
-        padding-top:0px !important;
-      }
-      ion-list.manual-list-fullwidth div.list, .list.card.manual-card-fullwidth {
-        margin-left:-10px;
-        margin-right:-10px;
-      }
-      ion-list.manual-list-fullwidth div.list > .item, .list.card.manual-card-fullwidth > .item {
-        border-radius:0px;
-        border-left:0px;
-        border-right: 0px;
-      }
-      .show-list-numbers-and-dots ul{
-        list-style-type: disc;
-        padding-left:40px;
-      }
-      .show-list-numbers-and-dots ol{
-        list-style-type: decimal;
-        padding-left:40px;
-      }
-    </style>
+  <!-- Ionic's root component and where the app will load -->
+  <ion-app>
+  </ion-app>
 
-    <script src="js/app.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/routes.js"></script>
-    
-     
-    <script src="js/directives.js"></script>
-     
-    <script src="js/services.js"></script>
-    
+  <!-- The polyfills js is generated during the build process -->
+  <script src="build/polyfills.js"></script>
 
-    <!-- Only required for Tab projects w/ pages in multiple tabs 
-    <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
-    -->
+  <!-- The bundle js is generated during the build process -->
+  <script src="build/main.js"></script>
 
-  </head>
-  <body ng-app="app" animation="slide-left-right-ios7">
-  <div>
-  <div>
-      <ion-view>
-        <ion-side-menus>
-          <ion-side-menu-content>
-				    <ion-nav-bar class="bar-stable">
-				      <ion-nav-back-button></ion-nav-back-button>
-				      <ion-nav-buttons side="right">
-						   <!-- Toggle right side menu -->
-						   <button menu-toggle="right" class="button button-icon icon ion-navicon"></button>
-						  </ion-nav-buttons>
-				    </ion-nav-bar>
-    				<ion-nav-view></ion-nav-view>
-          </ion-side-menu-content>
-				  <!-- Right menu -->
-				  <ion-side-menu side="right" is-enabled="true">
-            <header class="bar bar-header bar-stable">
-				      <h1 class="title">Options</h1>
-				    </header>
-				    <ion-content class="has-header">
-				      <ion-list>
-								<ion-item menu-close="" ng-click="login()">
-								  Login
-								</ion-item>
-								<ion-item menu-close="" href="#/app/search">
-								  Search
-								</ion-item>
-								<ion-item menu-close="" href="#/app/browse">
-								  Browse
-								</ion-item>
-								<ion-item menu-close="" href="#/app/playlists">
-								  Playlists
-								</ion-item>
-				      </ion-list>
-				    </ion-content>
-				  </ion-side-menu>
-				</ion-side-menus>
-      </ion-view>
-  </div>
-  </div>
-  </body>
+</body>
 </html>
