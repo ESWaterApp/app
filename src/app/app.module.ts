@@ -4,11 +4,14 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { VerifyLocationPage } from '../pages/verifyLocation/verifyLocation';
 import { TakePicturePage } from '../pages/takePicture/takePicture';
+import { CommentsPage } from '../pages/comments/comments';
 
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
 //Inject the AuthService
 import { AuthService } from '../providers/auth-service';
+
+import { ElasticModule } from 'angular2-elastic';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCqWaEWh06Ju65WF_LBkkKShnxFpFwb5CQ",
@@ -23,18 +26,21 @@ const firebaseConfig = {
     MyApp,
     HomePage,
     VerifyLocationPage,
-    TakePicturePage
+    TakePicturePage,
+    CommentsPage
   ],
   imports: [
     IonicModule.forRoot(MyApp), 
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig),
+    ElasticModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
     VerifyLocationPage,
-    TakePicturePage
+    TakePicturePage,
+    CommentsPage
   ],
   providers: [
     {provide: ErrorHandler, 

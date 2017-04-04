@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform, AlertController } from 'ionic-angular';
 import { VerifyLocationPage } from '../verifyLocation/verifyLocation'
-import { AngularFire } from 'angularfire2';
+import { AngularFire, FirebaseAuthState } from 'angularfire2';
+import { GooglePlus } from 'ionic-native';
 import { AuthService } from '../../providers/auth-service';
+import firebase from 'firebase';
 
 @Component({
   selector: 'page-home',
@@ -30,20 +32,67 @@ import { AuthService } from '../../providers/auth-service';
   </ion-content>
   `
 })
+
 export class HomePage {
-  constructor(public navCtrl: NavController, af: AngularFire, private _auth: AuthService) {
+  constructor(public navCtrl: NavController, private af: AngularFire, private _auth: AuthService, private platform: Platform, private alertController: AlertController) {
   }
-  logInGoogle() {
-    this._auth.signInWithgoogle().then(() => {
-      this.onSignInSuccess();
-    });
+  logInGoogle(): void {
+      this.af.auth.subscribe((data: FirebaseAuthState) => {
+   
+          this.af.auth.unsubscribe()
+          console.log("in auth subscribe", data)
+   
+          this.platform.ready().then(() => {
+             GooglePlus.login({
+                  'webClientId' : '186149461117-jfun8jk0qqo9em8ujf0r0kp3ivdg8ndp.apps.googleusercontent.com'
+             })
+             .then((userData) => {
+   
+                  console.log("userData " + JSON.stringify(userData));
+                  console.log("firebase " + firebase);
+                  var provider = firebase.auth.GoogleAuthProvider.credential(userData.idToken);
+   
+                   firebase.auth().signInWithCredential(provider)
+                    .then((success) => {
+                      console.log("Firebase success: " + JSON.stringify(success));
+                      this.onSignInSuccess();
+   
+                    })
+                    .catch((error) => {
+                      console.log("Firebase failure: " + JSON.stringify(error));
+                          this.displayAlert(error,"signInWithCredential failed")
+                    });
+   
+                   })
+               .catch((gplusErr) => {
+                      console.log("GooglePlus failure: " + JSON.stringify(gplusErr));
+                          this.displayAlert(JSON.stringify(gplusErr),"GooglePlus failed")
+                    });
+   
+              })
+         })
   }
   private onSignInSuccess(): void {
     this.goToVerify();
   }
-  goToVerify() {
+  goToVerify(): void {
     //Go to the verification page
     
     this.navCtrl.push(VerifyLocationPage);
   }
+
+  displayAlert(value: {},title: string)
+  {
+      let coolAlert = this.alertController.create({
+      title: title,
+      message: JSON.stringify(value),
+      buttons: [
+                    {
+                        text: "OK"
+                    }
+               ]
+      });
+      coolAlert.present();
+ 
+    }
 }
