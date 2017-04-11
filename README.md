@@ -2,7 +2,7 @@
 This is the repository for the ESW Water App, which is called WaterSense. The goal of WaterSense is to augment the old UCI maintenance reports
 system with a mobile and web app that enables easy reporting and management of reports by users and UCI staff. <br/>
 
-__If you want to know what we still need to do, go to the "HELP!!!" at the bottom!__
+__If you just want to know what to do, go to the "HELP!!!" at the bottom!__
 -------------------------------------------------------------
 
 __The Problem:__
