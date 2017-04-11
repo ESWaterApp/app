@@ -86,7 +86,7 @@ As you may have figured with all the tech lingo, this is going to be the more ad
 
 ### High-Level Tasks (Tentative)
 <ul>
-<li>1. Finalized the stack.</li>
+<li>1. Finalize the stack.</li>
 <li>2. Determine the schema for the app: reports + jobs/statuses + users + reporters + employees.</li>
 <li>3. Make the DB data integrated with the existing UCI maintenance data format (maybe send an email of the data as its stored in the DB).</li>
 </ul>
