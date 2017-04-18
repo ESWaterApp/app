@@ -38,8 +38,8 @@ export class HomePage {
   }
   logInGoogle(): void {
       this.af.auth.subscribe((data: FirebaseAuthState) => {
-   
-          this.af.auth.unsubscribe()
+          
+          this.af.auth.complete();
           console.log("in auth subscribe", data)
    
           this.platform.ready().then(() => {
@@ -47,26 +47,32 @@ export class HomePage {
                   'webClientId' : '186149461117-jfun8jk0qqo9em8ujf0r0kp3ivdg8ndp.apps.googleusercontent.com'
              })
              .then((userData) => {
-   
                   console.log("userData " + JSON.stringify(userData));
                   console.log("firebase " + firebase);
                   var provider = firebase.auth.GoogleAuthProvider.credential(userData.idToken);
    
                    firebase.auth().signInWithCredential(provider)
                     .then((success) => {
-                      console.log("Firebase success: " + JSON.stringify(success));
-                      this.onSignInSuccess();
-   
+                      if (success["email"].split("@")[1] == "uci.edu") {
+                        this.af.auth.unsubscribe();
+                        this.onSignInSuccess();
+                      }
+                      else {
+                        this.displayAlert("Invalid email", "UCI accounts only please.");
+                        GooglePlus.disconnect();
+                      }
                     })
                     .catch((error) => {
                       console.log("Firebase failure: " + JSON.stringify(error));
                           this.displayAlert(error,"signInWithCredential failed")
+                          GooglePlus.disconnect();
                     });
    
                    })
                .catch((gplusErr) => {
                       console.log("GooglePlus failure: " + JSON.stringify(gplusErr));
                           this.displayAlert(JSON.stringify(gplusErr),"GooglePlus failed")
+                          GooglePlus.disconnect();
                     });
    
               })
@@ -77,7 +83,6 @@ export class HomePage {
   }
   goToVerify(): void {
     //Go to the verification page
-    
     this.navCtrl.push(VerifyLocationPage);
   }
 
@@ -93,6 +98,5 @@ export class HomePage {
                ]
       });
       coolAlert.present();
- 
     }
 }

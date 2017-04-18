@@ -1,7 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, Content } from 'ionic-angular';
+import { Component, ViewChild, Inject } from '@angular/core';
+import { NavController, Content, AlertController } from 'ionic-angular';
 import { Camera } from 'ionic-native';
 import { CommentsPage } from '../comments/comments';
+import { FirebaseApp } from 'angularfire2';
+import * as firebase from 'firebase';
+import * as hash_it from 'hash-it';
 
 @Component({
   selector: 'page-takePicture',
@@ -25,7 +28,7 @@ import { CommentsPage } from '../comments/comments';
     </ion-card>
     <ion-buttons>
       <button (click)='goToComments()' [hidden]=confirm ion-button block large color="alert">
-        Confirm
+        {{this.confirm_text}}
       </button>
     </ion-buttons>
   </ion-content>
@@ -35,11 +38,13 @@ import { CommentsPage } from '../comments/comments';
 export class TakePicturePage {
   @ViewChild(Content) content: Content;
   cameraOptions: {};
-  image: {};
+  image: any;
   top_button: {};
+  storage: firebase.storage.Reference;
   confirm: boolean;
+  confirm_text: string;
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController,@Inject(FirebaseApp) public firebaseApp: firebase.app.App, private alertController: AlertController) {
     this.cameraOptions = {
       destinationType: Camera.DestinationType.DATA_URL
     };
@@ -53,6 +58,8 @@ export class TakePicturePage {
       color: 'alert'
     }
     this.confirm = true;
+    this.confirm_text = "Confirm";
+    this.storage = this.firebaseApp.storage().ref();
   }
 
   takePicture() {
@@ -74,6 +81,24 @@ export class TakePicturePage {
   }
 
   goToComments() {
-    this.navCtrl.push(CommentsPage);
+    var file_name = hash_it(this.image.name);
+    this.storage.child('Images/' + file_name).putString(this.image.name, 'data_url').then((snapshot) => {
+        this.navCtrl.push(CommentsPage);
+    }, (err) => {
+        this.displayAlert(err.message, "Failure Loading Image");
+    });
+  }
+
+  displayAlert(value: string,title: string) {
+      let coolAlert = this.alertController.create({
+      title: title,
+      message: value,
+      buttons: [
+                    {
+                        text: "OK"
+                    }
+               ]
+      });
+      coolAlert.present();
   }
 }
