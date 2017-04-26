@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { NavController, Platform, AlertController } from 'ionic-angular';
+import { Component, Inject } from '@angular/core';
+import { NavController, Platform, AlertController, LoadingController } from 'ionic-angular';
 import { VerifyLocationPage } from '../verifyLocation/verifyLocation'
-import { AngularFire, FirebaseAuthState } from 'angularfire2';
+import { AngularFire, FirebaseAuthState, FirebaseApp } from 'angularfire2';
 import { GooglePlus } from 'ionic-native';
 import { AuthService } from '../../providers/auth-service';
+import { ReportService } from '../services/ReportService';
 import firebase from 'firebase';
 
 @Component({
@@ -34,9 +35,20 @@ import firebase from 'firebase';
 })
 
 export class HomePage {
-  constructor(public navCtrl: NavController, private af: AngularFire, private _auth: AuthService, private platform: Platform, private alertController: AlertController) {
+  signed_in: boolean;
+  loader: any;
+  db: firebase.database.Reference;
+  constructor(public navCtrl: NavController, private af: AngularFire, @Inject(FirebaseApp) private firebaseApp: firebase.app.App, private _auth: AuthService, private platform: Platform, private alertController: AlertController, private loadCtrl: LoadingController, private reportService: ReportService) {
+    this.signed_in = false;
+    this.loader = loadCtrl.create({
+      content: "Signing in..."
+    });
+    this.db = this.firebaseApp.database().ref();
   }
   logInGoogle(): void {
+      if(this.signed_in)
+        this.goToVerify();
+      this.loader.present();
       this.af.auth.subscribe((data: FirebaseAuthState) => {
           
           this.af.auth.complete();
@@ -53,8 +65,12 @@ export class HomePage {
    
                    firebase.auth().signInWithCredential(provider)
                     .then((success) => {
+                      this.loader.dismiss();
                       if (success["email"].split("@")[1] == "uci.edu") {
                         this.af.auth.unsubscribe();
+                        this.signed_in = true;
+                        this.reportService.setUserid(success["email"].split("@")[0]);
+                        this.db.child("Users").update({[success["email"].split("@")[0]] : {Email: success["email"], Reports: {}}});
                         this.onSignInSuccess();
                       }
                       else {
@@ -63,9 +79,10 @@ export class HomePage {
                       }
                     })
                     .catch((error) => {
+                      this.loader.dismiss();
                       console.log("Firebase failure: " + JSON.stringify(error));
-                          this.displayAlert(error,"signInWithCredential failed")
-                          GooglePlus.disconnect();
+                      this.displayAlert(error,"signInWithCredential failed")
+                      GooglePlus.disconnect();
                     });
    
                    })

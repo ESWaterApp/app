@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Geolocation } from 'ionic-native';
 import { TakePicturePage } from '../takePicture/takePicture'
+import { ReportService } from '../services/ReportService';
 declare var google;
 
 @Component({
@@ -28,8 +29,8 @@ declare var google;
 export class VerifyLocationPage {
   @ViewChild('map') mapElement: ElementRef;
   map: any;
-
-  constructor(public navCtrl: NavController) {
+  marker: any;
+  constructor(public navCtrl: NavController, private reportService: ReportService) {
   }
 
   ionViewDidLoad () {
@@ -57,21 +58,21 @@ export class VerifyLocationPage {
   }
   
   addMarker() {
-    let marker = new google.maps.Marker({
+    this.marker = new google.maps.Marker({
       map: this.map,
       animation: google.maps.Animation.DROP,
       position: this.map.getCenter(),
       draggable: true
     });
-
+    
     let content = "<h4>Your location.</h4>";
    
-    this.addInfoWindow(marker, content);
+    this.addInfoWindow(this.marker, content);
   }
 
   addInfoWindow(marker, content) {
     let infoWindow = new google.maps.InfoWindow({
-    content: content
+      content: content
     });
    
     infoWindow.open(this.map, marker);
@@ -81,6 +82,7 @@ export class VerifyLocationPage {
   }
 
   goToPicture() {
+    this.reportService.setLocation(this.marker.position);
     this.navCtrl.push(TakePicturePage);
   }
 }
