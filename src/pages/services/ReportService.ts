@@ -3,6 +3,8 @@ import {Injectable} from "@angular/core";
 export class ReportService {
   private _Userid: string;
   private _Location: {};
+  private _Datetime: string;
+  private _ImageURL: string;
   private _ImageID: string;
   private _Status: string;
   private _Solved: boolean;
@@ -19,6 +21,15 @@ export class ReportService {
   setLocation(loc: {}) {
     this._Location = JSON.parse(JSON.stringify(loc));
   }
+  setDatetime(datetime: string) {
+    this._Datetime = datetime;
+  }
+  setImageURL(imageURL: string) {
+    this._ImageURL = imageURL;
+  }
+  getImageURL() {
+    return this._ImageURL;
+  }
   setImageId(imageID: string) {
     this._ImageID = imageID;
   }
@@ -27,6 +38,6 @@ export class ReportService {
   }
   
   toJSON() : {} {
-    return {"User": this._Userid, "Location": this._Location, "ImageID": this._ImageID, "Status": this._Status, "Solved": this._Solved, "Deleted": this._Deleted, "Comments": this._Comments};
+    return {"User": this._Userid, "Location": this._Location, "Datetime": this._Datetime, "ImageID": this._ImageID, "Status": this._Status, "Solved": this._Solved, "Deleted": this._Deleted, "Comments": this._Comments};
   }
 }

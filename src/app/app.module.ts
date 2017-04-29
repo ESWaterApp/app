@@ -12,6 +12,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AuthService } from '../providers/auth-service';
 
 import { ElasticModule } from 'angular2-elastic';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCqWaEWh06Ju65WF_LBkkKShnxFpFwb5CQ",
@@ -45,7 +46,8 @@ const firebaseConfig = {
   providers: [
     {provide: ErrorHandler, 
     useClass: IonicErrorHandler},
-    AuthService
+    AuthService,
+    SocialSharing
   ]
 })
 export class AppModule {}

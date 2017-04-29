@@ -98,6 +98,7 @@ export class TakePicturePage {
         this.reportService.setImageId(file_name);
         this.loader.dismiss();
         this.navCtrl.push(CommentsPage);
+        this.reportService.setImageURL(this.image.name);
     }, (err) => {
         this.loader.dismiss();
         this.displayAlert(err.message, "Failure Loading Image");

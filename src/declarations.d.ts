@@ -13,3 +13,4 @@
 */
 declare module '*';
 declare module 'hash-it';
+declare module 'moment';
