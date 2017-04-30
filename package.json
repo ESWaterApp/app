@@ -49,8 +49,21 @@
     "cordova-plugin-device",
     "cordova-plugin-console",
     "ionic-plugin-keyboard",
-    "cordova-plugin-splashscreen"
+    "cordova-plugin-splashscreen",
+    "cordova-plugin-geolocation",
+    "cordova-plugin-compat",
+    "cordova-plugin-camera",
+    "cordova-plugin-googlemaps",
+    "cordova-plugin-googleplus",
+    "cordova-plugin-x-socialsharing",
+    "es6-promise-plugin"
   ],
-  "cordovaPlatforms": [],
+  "cordovaPlatforms": [
+    {
+      "platform": "android",
+      "version": "",
+      "locator": "android"
+    }
+  ],
   "description": "af2-lists: An Ionic project"
 }
