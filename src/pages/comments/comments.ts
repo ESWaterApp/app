@@ -53,29 +53,20 @@ export class CommentsPage {
     var body = "Location: https://www.google.com/maps/@" + report["Location"]["lat"] + "," + report["Location"]["lng"] +",15z \n"
     + "Comments: " + report["Comments"] + "\n";
     return this.firebaseApp.storage().ref("Images/" + report["ImageID"]).getDownloadURL().then((val) => {
-      body += "Image Link:" + val + "\n"
+      body += "Image Link: " + val + "\n"
       return this.socialSharing.shareViaEmail(body, subject, [this.recipient_addr], [], [], []);
     }, (err) => {
       body += "Image Unavailable." + "\n";
       return this.socialSharing.shareViaEmail(body, subject, [this.recipient_addr], [], [], []);
     });
   }
-  emailResult(emailPromise) {
-    emailPromise.then((val) => {
-      this.goHome();
-    }, (err) => {
-      this.displayAlert(err + "\nOK to continue.", "Email Failure. Not Sent.").then((val) => {
-        this.goHome();
-      });
-    });
-  }
   commitReport() {
     var report = this.recordInDB();
     this.socialSharing.canShareViaEmail().then((val) => {
       this.sendEmail(report).then((emailPromise) => {
-        this.emailResult(emailPromise);
+        this.goHome();
       }, (err) => {
-        this.emailResult(err);
+        this.goHome();
       });
     }, (err) => {
       this.displayAlert(err + "\nOK to continue.", "Gmail Unavailable.").then((val) => {
