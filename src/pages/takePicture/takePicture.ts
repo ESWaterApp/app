@@ -44,6 +44,7 @@ export class TakePicturePage {
   storage: firebase.storage.Reference;
   confirm: boolean;
   loader: any;
+  file_name: string;
 
   constructor(public navCtrl: NavController,@Inject(FirebaseApp) private firebaseApp: firebase.app.App, private alertController: AlertController, private loadCtrl: LoadingController, private reportService: ReportService) {
     this.cameraOptions = {
@@ -75,8 +76,9 @@ export class TakePicturePage {
 
   takePicture() {
     Camera.getPicture(this.cameraOptions).then((imageData) => {
+      this.file_name = hash_it(imageData);
       this.image = {
-        name: 'data:image/jpeg;base64,' + imageData,
+        name: 'data:image/jpeg;df:' + this.file_name + '.jpeg;base64,' + imageData,
         width: this.content.getContentDimensions().contentWidth * 0.75,
         height: this.content.getContentDimensions().contentHeight * 0.5
       };
@@ -92,10 +94,9 @@ export class TakePicturePage {
   }
 
   goToComments() {
-    var file_name = hash_it(this.image.name);
     this.loader.present();
-    this.storage.child('Images/' + file_name).putString(this.image.name, 'data_url').then((snapshot) => {
-        this.reportService.setImageId(file_name);
+    this.storage.child('Images/' + this.file_name).putString(this.image.name, 'data_url').then((snapshot) => {
+        this.reportService.setImageId(this.file_name);
         this.loader.dismiss();
         this.navCtrl.push(CommentsPage);
         this.reportService.setImageURL(this.image.name);
