@@ -51,19 +51,31 @@ export class CommentsPage {
   sendEmail(report: {}) {
     var subject = "Report from " + report["User"];
     var body = "Location: https://www.google.com/maps/@" + report["Location"]["lat"] + "," + report["Location"]["lng"] +",15z \n"
-    + "Comments: " + report["Comments"];
-    var attachments = this.reportService.getImageURL();
-    return this.socialSharing.shareViaEmail(body, subject, [this.recipient_addr], [], [], [attachments]);
+    + "Comments: " + report["Comments"] + "\n";
+    return this.firebaseApp.storage().ref("Images/" + report["ImageID"]).getDownloadURL().then((val) => {
+      body += "Image Link:" + val + "\n"
+      return this.socialSharing.shareViaEmail(body, subject, [this.recipient_addr], [], [], []);
+    }, (err) => {
+      body += "Image Unavailable." + "\n";
+      return this.socialSharing.shareViaEmail(body, subject, [this.recipient_addr], [], [], []);
+    });
+  }
+  emailResult(emailPromise) {
+    emailPromise.then((val) => {
+      this.goHome();
+    }, (err) => {
+      this.displayAlert(err + "\nOK to continue.", "Email Failure. Not Sent.").then((val) => {
+        this.goHome();
+      });
+    });
   }
   commitReport() {
     var report = this.recordInDB();
     this.socialSharing.canShareViaEmail().then((val) => {
-      this.sendEmail(report).then((val) => {
-        this.goHome();
+      this.sendEmail(report).then((emailPromise) => {
+        this.emailResult(emailPromise);
       }, (err) => {
-        this.displayAlert(err + "\nOK to continue.", "Email Failure. Not Sent.").then((val) => {
-          this.goHome();
-        });
+        this.emailResult(err);
       });
     }, (err) => {
       this.displayAlert(err + "\nOK to continue.", "Gmail Unavailable.").then((val) => {
