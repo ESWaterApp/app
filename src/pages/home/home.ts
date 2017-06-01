@@ -1,10 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { NavController, Platform, AlertController, LoadingController } from 'ionic-angular';
+import { NavController, Platform, AlertController, LoadingController, ModalController } from 'ionic-angular';
 import { VerifyLocationPage } from '../verifyLocation/verifyLocation'
 import { AngularFire, FirebaseAuthState, FirebaseApp } from 'angularfire2';
 import { GooglePlus } from 'ionic-native';
 import { AuthService } from '../../providers/auth-service';
 import { ReportService } from '../services/ReportService';
+import { DisplayService } from '../services/DisplayService';
+import { PrivacyPage } from '../privacy/privacy';
 import firebase from 'firebase';
 
 @Component({
@@ -13,21 +15,16 @@ import firebase from 'firebase';
   template: `
   <ion-header>
     <ion-navbar>
-      <ion-title center>WaterSense</ion-title>
+      <ion-title center>ZotReport</ion-title>
     </ion-navbar>
   </ion-header>
   <ion-content padding>
     <div>
-      <img src="assets/img/esw_logo.png" style="display: block; width: 100%; height: auto; margin-left: auto; margin-right: auto;">
+      <img src="assets/img/app_icon.png" style="display: block; width: 100%; height: auto; margin-left: auto; margin-right: auto;">
     </div>
     <ion-buttons>
       <button (click)="logInGoogle()" ion-button block large color="danger">
         Report
-      </button>
-    </ion-buttons>
-    <ion-buttons>
-      <button ion-button large block color="positive">
-        View Status
       </button>
     </ion-buttons>
   </ion-content>
@@ -35,85 +32,78 @@ import firebase from 'firebase';
 })
 
 export class HomePage {
-  signed_in: boolean;
   loader: any;
   db: firebase.database.Reference;
-  constructor(public navCtrl: NavController, private af: AngularFire, @Inject(FirebaseApp) private firebaseApp: firebase.app.App, private _auth: AuthService, private platform: Platform, private alertController: AlertController, private loadCtrl: LoadingController, private reportService: ReportService) {
-    this.signed_in = false;
+  privacyModal: any;
+  constructor(public navCtrl: NavController, private af: AngularFire, @Inject(FirebaseApp) private firebaseApp: firebase.app.App, private _auth: AuthService, private platform: Platform, private alertController: AlertController, private loadCtrl: LoadingController, private reportService: ReportService, private displayService: DisplayService, public modalCtrl: ModalController) {
     this.loader = loadCtrl.create({
       content: "Signing in..."
     });
     this.db = this.firebaseApp.database().ref();
+    this.privacyModal = this.modalCtrl.create(PrivacyPage);
   }
-  logInGoogle(): void {
-      if(this.signed_in)
-        this.goToVerify();
-      this.loader.present();
+  logInGoogle(evt): void {
       this.af.auth.subscribe((data: FirebaseAuthState) => {
-          
+        GooglePlus.trySilentLogin({
+          'webClientId' : '186149461117-jfun8jk0qqo9em8ujf0r0kp3ivdg8ndp.apps.googleusercontent.com'
+        }).then((success) => {
+          this.goToVerify(success["email"].split("@")[0]);
+        }).catch((fail) => {
           this.af.auth.complete();
-          console.log("in auth subscribe", data)
-   
+          this.privacyModal.onDidDismiss((flag) => {
+            if(flag === "failure")
+              return;
+            this.displayService.displayAlert("You must sign in with a UCI email", "UCI only.").then((success) => {
+              this.googleSignIn();
+            }).catch((fail) => {
+              this.googleSignIn();
+            });
+          });
           this.platform.ready().then(() => {
-             GooglePlus.login({
-                  'webClientId' : '186149461117-jfun8jk0qqo9em8ujf0r0kp3ivdg8ndp.apps.googleusercontent.com'
-             })
-             .then((userData) => {
-                  console.log("userData " + JSON.stringify(userData));
-                  console.log("firebase " + firebase);
-                  var provider = firebase.auth.GoogleAuthProvider.credential(userData.idToken);
-   
-                   firebase.auth().signInWithCredential(provider)
-                    .then((success) => {
-                      this.loader.dismiss();
-                      if (success["email"].split("@")[1] == "uci.edu") {
-                        this.af.auth.unsubscribe();
-                        this.signed_in = true;
-                        this.reportService.setUserid(success["email"].split("@")[0]);
-                        this.db.child("Users").update({[success["email"].split("@")[0]] : {Email: success["email"], Reports: {}}});
-                        this.onSignInSuccess();
-                      }
-                      else {
-                        this.displayAlert("Invalid email", "UCI accounts only please.");
-                        GooglePlus.disconnect();
-                      }
-                    })
-                    .catch((error) => {
-                      this.loader.dismiss();
-                      console.log("Firebase failure: " + JSON.stringify(error));
-                      this.displayAlert(error,"signInWithCredential failed")
-                      GooglePlus.disconnect();
-                    });
-   
-                   })
-               .catch((gplusErr) => {
-                      console.log("GooglePlus failure: " + JSON.stringify(gplusErr));
-                          this.displayAlert(JSON.stringify(gplusErr),"GooglePlus failed")
-                          GooglePlus.disconnect();
-                    });
-   
-              })
-         })
+             this.privacyModal.present({
+              ev: evt
+             });
+          })
+        });
+      })
   }
-  private onSignInSuccess(): void {
-    this.goToVerify();
+  googleSignIn() {
+    this.loader.present();
+     GooglePlus.login({
+          'webClientId' : '186149461117-jfun8jk0qqo9em8ujf0r0kp3ivdg8ndp.apps.googleusercontent.com'
+     })
+     .then((userData) => {
+        var provider = firebase.auth.GoogleAuthProvider.credential(userData.idToken);
+
+         firebase.auth().signInWithCredential(provider)
+         .then((success) => {
+            this.loader.dismiss();
+            if (success["email"].split("@")[1] == "uci.edu") {
+              this.af.auth.unsubscribe();
+              this.db.child("Users").update({[success["email"].split("@")[0]] : {Email: success["email"], Reports: {}}});
+              this.goToVerify(success["email"].split("@")[0]);
+            }
+            else {
+              Promise.all([GooglePlus.logout(),
+                           this.displayService.displayAlert("Invalid email", "UCI accounts only please.")]).then((success) => {
+                this.googleSignIn()
+              });;
+            }
+        })
+        .catch((error) => {
+          this.loader.dismiss();
+          this.displayService.displayAlert(error,"signInWithCredential failed")
+          GooglePlus.disconnect();
+        })
+     })
+     .catch((gplusErr) => {
+        this.displayService.displayAlert(gplusErr,"GooglePlus failed")
+        GooglePlus.disconnect();
+     });
   }
-  goToVerify(): void {
+  goToVerify(username: string): void {
+    this.reportService.setUserid(username);;
     //Go to the verification page
     this.navCtrl.push(VerifyLocationPage);
   }
-
-  displayAlert(value: {},title: string)
-  {
-      let coolAlert = this.alertController.create({
-      title: title,
-      message: JSON.stringify(value),
-      buttons: [
-                    {
-                        text: "OK"
-                    }
-               ]
-      });
-      coolAlert.present();
-    }
 }

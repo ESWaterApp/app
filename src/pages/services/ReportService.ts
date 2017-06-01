@@ -10,6 +10,7 @@ export class ReportService {
   private _Solved: boolean;
   private _Deleted: boolean;
   private _Comments: string;
+  private _Authority: string;
   constructor() {
     this._Status = "Unassigned";
     this._Solved = false;
@@ -36,8 +37,10 @@ export class ReportService {
   setComments(comments: string) {
     this._Comments = comments;
   }
-  
+  setAuthority(authority: string) {
+    this._Authority = authority;
+  }
   toJSON() : {} {
-    return {"User": this._Userid, "Location": this._Location, "Datetime": this._Datetime, "ImageID": this._ImageID, "Status": this._Status, "Solved": this._Solved, "Deleted": this._Deleted, "Comments": this._Comments};
+    return {"User": this._Userid, "Location": this._Location, "Datetime": this._Datetime, "ImageID": this._ImageID, "Status": this._Status, "Solved": this._Solved, "Deleted": this._Deleted, "Comments": this._Comments, "Authority": this._Authority};
   }
 }

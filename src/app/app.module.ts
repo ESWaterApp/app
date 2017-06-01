@@ -2,17 +2,21 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { PrivacyPage } from '../pages/privacy/privacy';
 import { VerifyLocationPage } from '../pages/verifyLocation/verifyLocation';
 import { TakePicturePage } from '../pages/takePicture/takePicture';
 import { CommentsPage } from '../pages/comments/comments';
+import { AuthoritiesPage } from '../pages/authorities/authorities';
 
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
 //Inject the AuthService
 import { AuthService } from '../providers/auth-service';
+import { DisplayService } from '../pages/services/DisplayService';
 
 import { ElasticModule } from 'angular2-elastic';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCqWaEWh06Ju65WF_LBkkKShnxFpFwb5CQ",
@@ -26,9 +30,11 @@ const firebaseConfig = {
   declarations: [
     MyApp,
     HomePage,
+    PrivacyPage,
     VerifyLocationPage,
     TakePicturePage,
-    CommentsPage
+    CommentsPage,
+    AuthoritiesPage
   ],
   imports: [
     IonicModule.forRoot(MyApp), 
@@ -39,14 +45,18 @@ const firebaseConfig = {
   entryComponents: [
     MyApp,
     HomePage,
+    PrivacyPage,
     VerifyLocationPage,
     TakePicturePage,
-    CommentsPage
+    CommentsPage,
+    AuthoritiesPage
   ],
   providers: [
     {provide: ErrorHandler, 
     useClass: IonicErrorHandler},
     AuthService,
+    InAppBrowser,
+    DisplayService,
     SocialSharing
   ]
 })

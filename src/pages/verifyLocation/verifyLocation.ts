@@ -32,7 +32,6 @@ export class VerifyLocationPage {
   marker: any;
   constructor(public navCtrl: NavController, private reportService: ReportService) {
   }
-
   ionViewDidLoad () {
     this.loadMap().then(() => {
       this.addMarker();
@@ -40,7 +39,6 @@ export class VerifyLocationPage {
       console.log(err);
     });
   }
-
   loadMap() {
     return Geolocation.getCurrentPosition().then((position) => {
       let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);

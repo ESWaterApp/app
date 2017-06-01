@@ -4,6 +4,7 @@ import { Camera } from 'ionic-native';
 import { CommentsPage } from '../comments/comments';
 import { FirebaseApp } from 'angularfire2';
 import { ReportService } from '../services/ReportService';
+import { DisplayService } from '../services/DisplayService';
 import * as firebase from 'firebase';
 import * as hash_it from 'hash-it';
 
@@ -46,7 +47,7 @@ export class TakePicturePage {
   loader: any;
   file_name: string;
 
-  constructor(public navCtrl: NavController,@Inject(FirebaseApp) private firebaseApp: firebase.app.App, private alertController: AlertController, private loadCtrl: LoadingController, private reportService: ReportService) {
+  constructor(public navCtrl: NavController,@Inject(FirebaseApp) private firebaseApp: firebase.app.App, private alertController: AlertController, private loadCtrl: LoadingController, private reportService: ReportService, private displayService: DisplayService) {
     this.cameraOptions = {
       destinationType: Camera.DestinationType.DATA_URL
     };
@@ -102,20 +103,7 @@ export class TakePicturePage {
         this.reportService.setImageURL(this.image.name);
     }, (err) => {
         this.loader.dismiss();
-        this.displayAlert(err.message, "Failure Loading Image");
+        this.displayService.displayAlert(err.message, "Failure Loading Image");
     });
-  }
-
-  displayAlert(value: string,title: string) {
-      let coolAlert = this.alertController.create({
-      title: title,
-      message: value,
-      buttons: [
-                    {
-                        text: "OK"
-                    }
-               ]
-      });
-      coolAlert.present();
   }
 }

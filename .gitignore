@@ -9,3 +9,4 @@ plugins/
 .gitignore
 planning/
 www/build/
+*.sh

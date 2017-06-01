@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { HomePage } from '../pages/home/home';
-import { ReportService } from '../pages/services/ReportService.ts';
+import { ReportService } from '../pages/services/ReportService';
+import { DisplayService } from '../pages/services/DisplayService';
 
 
 @Component({
   templateUrl: 'app.html',
-  providers: [ReportService],
+  providers: [ReportService, DisplayService],
   template: '<ion-nav [root]="rootPage"></ion-nav>'
 })
 export class MyApp {

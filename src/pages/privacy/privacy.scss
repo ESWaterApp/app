@@ -1,0 +1,25 @@
+page-privacy {
+  .card-title {
+    position: absolute;
+    top: 36%;
+    font-size: 2.0em;
+    width: 100%;
+    font-weight: bold;
+    color: #fff;
+  }
+	ion-card {
+    position: relative;
+    text-align: center;
+    margin: auto;
+	}
+	button {
+		position: absolute;
+	}
+	.webPage{
+	  display: block;
+	  height: 65vh;
+	  width: 100%;
+	  border: 2px solid #EAAB00;
+	  padding: 1rem;
+	}
+}
