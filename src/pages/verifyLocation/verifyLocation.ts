@@ -119,8 +119,7 @@ export class VerifyLocationPage {
     });
   }
   goToPicture() {
-    this.reportService.setLocation(this.marker.position);
-    this.reportService.setLocationName(this.infoWindow.getContent());
+    this.reportService.setLocation(this.infoWindow.getContent());
     this.navCtrl.push(TakePicturePage);
   }
 }

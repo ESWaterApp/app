@@ -79,7 +79,7 @@ export class AuthoritiesPage {
     var subject = "Report from " + report["User"];
     var body = 
     "Comments:\n" + report["Comments"] +
-    "\nLocation: " + report["Location Name"] + "\n Google Maps Link: https://www.google.com/maps/@" + report["Location"]["lat"] + "," + report["Location"]["lng"] +",15z\n";
+    "\nLocation: " + report["Location"] + "\n Google Maps Link: https://www.google.com/maps/search/" + encodeURI(report["Location"]) + "\n";
     return this.firebaseApp.storage().ref("Images/" + report["ImageID"]).getDownloadURL().then((val) => {
       body += "Image Link (Firebase Storage Download Link):\n" + val + "\n"
       return this.socialSharing.shareViaEmail(body, subject, [recipient], [], [], []);
