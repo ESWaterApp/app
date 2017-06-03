@@ -16,7 +16,6 @@ import { DisplayService } from '../pages/services/DisplayService';
 
 import { ElasticModule } from 'angular2-elastic';
 import { SocialSharing } from '@ionic-native/social-sharing';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCqWaEWh06Ju65WF_LBkkKShnxFpFwb5CQ",
@@ -55,7 +54,6 @@ const firebaseConfig = {
     {provide: ErrorHandler, 
     useClass: IonicErrorHandler},
     AuthService,
-    InAppBrowser,
     DisplayService,
     SocialSharing
   ]

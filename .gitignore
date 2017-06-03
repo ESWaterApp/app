@@ -10,3 +10,4 @@ plugins/
 planning/
 www/build/
 *.sh
+*.swp

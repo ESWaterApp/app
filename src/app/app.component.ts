@@ -5,10 +5,13 @@ import { HomePage } from '../pages/home/home';
 import { ReportService } from '../pages/services/ReportService';
 import { DisplayService } from '../pages/services/DisplayService';
 
+import { Keyboard } from '@ionic-native/keyboard';
+import { Geocoder } from '../pages/services/Geocoder';
+
 
 @Component({
   templateUrl: 'app.html',
-  providers: [ReportService, DisplayService],
+  providers: [ReportService, DisplayService, Geocoder, Keyboard],
   template: '<ion-nav [root]="rootPage"></ion-nav>'
 })
 export class MyApp {
