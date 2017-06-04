@@ -43,8 +43,10 @@ export class HomePage {
     this.privacyModal = this.modalCtrl.create(PrivacyPage);
   }
   logInGoogle(evt): void {
-      if(this.reportService.has_reported)
+      if(this.reportService.has_reported) {
         this.goToVerify(this.reportService.getUserid());
+        return;
+      }
       this.af.auth.subscribe((data: FirebaseAuthState) => {
         GooglePlus.trySilentLogin({
           'webClientId' : '186149461117-jfun8jk0qqo9em8ujf0r0kp3ivdg8ndp.apps.googleusercontent.com'

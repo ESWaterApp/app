@@ -32,7 +32,6 @@ declare var google;
 
 export class VerifyLocationPage {
   @ViewChild('map') mapElement: ElementRef;
-  @ViewChild('search') searchElement: ElementRef;
   map: any;
   marker: any;
   infoWindow: any;
@@ -84,7 +83,13 @@ export class VerifyLocationPage {
         }
       
         this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-        resolve(this.geocoder.setAddress(position.coords.latitude, position.coords.longitude));
+        this.geocoder.setAddress(position.coords.latitude, position.coords.longitude).then((val) => {
+          resolve(val);
+        }, (err) => {
+          this.displayService.displayAlert(err, "Cannot Set Address").then(() => {
+            reject(err);
+          });
+        });;
       }, (err) => {
         reject(err);
       });
@@ -116,6 +121,8 @@ export class VerifyLocationPage {
   setInfoWindowContent(marker: any) {
     this.geocoder.setAddress(marker.position.lat(), marker.position.lng()).then((location) => {
       this.infoWindow.setContent(location);
+    }, (err) => {
+      this.displayService.displayAlert(err, "Cannot Set Address");
     });
   }
   goToPicture() {
