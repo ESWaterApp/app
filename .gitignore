@@ -11,3 +11,4 @@ planning/
 www/build/
 *.sh
 *.swp
+resources/android/keystore/
