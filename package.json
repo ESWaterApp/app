@@ -23,7 +23,6 @@
         "@ionic-native/google-plus": "^3.4.4",
         "@ionic-native/in-app-browser": "^3.10.3",
         "@ionic-native/keyboard": "^3.11.0",
-        "@ionic-native/native-geocoder": "^3.11.0",
         "@ionic-native/social-sharing": "^3.6.1",
         "@ionic/storage": "2.0.0",
         "angular2-elastic": "^0.13.0",
@@ -96,7 +95,6 @@
             "cordova-plugin-googleplus": {
                 "REVERSED_CLIENT_ID": "186149461117-ho2v19h3f3cufr2vni6bo1ud04rutjbl.apps.googleusercontent.com"
             },
-            "cordova-plugin-nativegeocoder": {},
             "cordova-plugin-camera": {},
             "cordova-plugin-geolocation": {},
             "cordova-plugin-googlemaps": {}
